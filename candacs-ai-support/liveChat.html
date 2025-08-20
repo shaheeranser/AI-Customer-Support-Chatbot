@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candacs - Customer Support</title>
+    <link rel="stylesheet" href="assets/css/liveChat.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Candacs</h1>
+                <p>Customer Support</p>
+            </div>
+            
+            <ul class="menu">
+                <li>
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="active">
+                    <a href="liveChat.html" class="menu-link">
+                        <i class="fas fa-comment"></i>
+                        <span>Live Chats</span>
+                    </a>
+                </li>
+                <li>
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Tickets</span>
+                </li>
+                <li>
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts</span>
+                </li>
+                <li>
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </li>
+                 <li>
+                     <a href="profile.html" class="menu-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <div class="agent-info">
+                        <div class="agent-avatar">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Agent">
+                            <span class="status online"></span>
+                        </div>
+                        <div class="agent-details">
+                            <h3>Sarah Agent</h3>
+                            <p>Online</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-with">
+                        <h3>Live Chat with <span id="chat-customer-name">Customer</span></h3>
+                        <p id="customer-status">Online</p>
+                    </div>
+                    
+                    <div class="chat-actions">
+                        <button class="btn-transfer">
+                            <i class="fas fa-exchange-alt"></i>
+                            Transfer
+                        </button>
+                        <button class="btn-end" id="end-chat-btn">
+                            <i class="fas fa-times"></i>
+                            End Chat
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages">
+                    <!-- Messages will be populated by JavaScript -->
+                </div>
+                
+                <div class="chat-input">
+                    <div class="input-container">
+                        <input type="text" placeholder="Type a message..." id="message-input">
+                        <div class="input-actions">
+                            <button><i class="far fa-smile"></i></button>
+                            <button><i class="fas fa-paperclip"></i></button>
+                            <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Customer Profile Section -->
+            <div class="profile-section">
+                <div class="profile-header">
+                    <h2>Customer Profile</h2>
+                </div>
+                
+                <div class="profile-details">
+                    <div class="customer-info">
+                        <h3 id="profile-customer-name">Loading...</h3>
+                        <p id="profile-customer-email">Loading...</p>
+                    </div>
+                    
+                    <div class="customer-data">
+                        <div class="data-row">
+                            <span class="label">Plan:</span>
+                            <span class="value" id="profile-customer-plan">Loading...</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Joined:</span>
+                            <span class="value" id="profile-customer-joined">Loading...</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Status:</span>
+                            <span class="value active" id="profile-customer-status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-summary">
+                    <div class="summary-header">
+                        <h2>AI Summary</h2>
+                    </div>
+                    
+                    <div class="summary-content">
+                        <div class="insight">
+                            <i class="fas fa-lightbulb"></i>
+                            <div class="insight-text">
+                                <h4>AI Insights</h4>
+                                <p id="ai-summary-text">Customer information loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-base">
+                    <div class="kb-header">
+                        <h2>Knowledge Base</h2>
+                    </div>
+                    
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search articles...">
+                    </div>
+                    
+                    <button class="view-all-btn">
+                        View All Articles
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/liveChat.js"></script>
+</body>
+</html>

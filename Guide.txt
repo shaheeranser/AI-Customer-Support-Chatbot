@@ -1,0 +1,4 @@
+First of all create a virtual envirnoment for flask server. 
+Command:
+py -3 -m venv .venv
+.\.venv\Scripts\Activate
