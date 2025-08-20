@@ -66,6 +66,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Simple mock AI response logic
     function getAgentReply(userMessage) {
+
+     // Commit out the below part and add the AI modle API 
+     //------------------------------------------------------------------------  
         userMessage = userMessage.toLowerCase();
 
         if (userMessage.includes("hello") || userMessage.includes("hi")) {
@@ -79,6 +82,43 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             return "I'm here to help. Could you please provide more details about your question?";
         }
+
+     //------------------------------------------------------------------------
+
+    //  try {
+    //     // Using environment variable (set in your build process)
+    //     const API_KEY = process.env.OPENAI_API_KEY;
+    //     const API_URL = "https://api.openai.com/v1/chat/completions";
+        
+    //     const response = await fetch(API_URL, {
+    //         method: 'POST',
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Authorization': `Bearer ${API_KEY}`
+    //         },
+    //         body: JSON.stringify({
+    //             model: "gpt-3.5-turbo",
+    //             messages: [
+    //                 {
+    //                     role: "system", 
+    //                     content: "You are a helpful customer support assistant. Provide concise, helpful responses."
+    //                 },
+    //                 {
+    //                     role: "user", 
+    //                     content: userMessage
+    //                 }
+    //             ],
+    //             temperature: 0.7
+    //         })
+    //     });
+
+    //     const data = await response.json();
+    //     return data.choices[0].message.content;
+        
+    // } catch (error) {
+    //     console.error("Error calling AI API:", error);
+    //     return getFallbackResponse(userMessage);
+    // }
     }
 
     // Get current time
