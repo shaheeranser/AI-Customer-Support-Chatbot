@@ -1,4 +1,4 @@
-// liveChat.js
+// assets/js/liveChat.js
 
 document.addEventListener("DOMContentLoaded", () => {
     const chatMessages = document.querySelector(".chat-messages");
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         endChat();
     });
 
-    function sendMessage() {
+    async function sendMessage() {
         const messageText = chatInput.value.trim();
         if (messageText === "") return;
 
@@ -36,11 +36,48 @@ document.addEventListener("DOMContentLoaded", () => {
         // Clear input
         chatInput.value = "";
 
-        // Simulate AI/Agent reply
-        setTimeout(() => {
-            const reply = getAgentReply(messageText);
-            appendMessage("agent", reply);
-        }, 800);
+        // Disable input while waiting for response
+        chatInput.disabled = true;
+        sendBtn.disabled = true;
+
+        try {
+            // Make API call to Flask backend - using relative path
+            const response = await fetch('/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: messageText
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            // Check if there's an error in the response
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            // Append the response from the API
+            appendMessage("agent", data.response);
+            
+            // Log the intent for debugging
+            console.log("Detected intent:", data.intent);
+        } catch (error) {
+            console.error("Error calling API:", error);
+            // Show user-friendly error message
+            appendMessage("agent", "I'm having trouble connecting to the support system. Please try again in a moment.");
+        } finally {
+            // Re-enable input
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            chatInput.focus();
+        }
     }
 
     // Append message to chat
@@ -62,63 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Auto scroll to bottom
         chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
-
-    // Simple mock AI response logic
-    function getAgentReply(userMessage) {
-
-     // Commit out the below part and add the AI modle API 
-     //------------------------------------------------------------------------  
-        userMessage = userMessage.toLowerCase();
-
-        if (userMessage.includes("hello") || userMessage.includes("hi")) {
-            return "Hello! 👋 How can I assist you today?";
-        } else if (userMessage.includes("billing") || userMessage.includes("payment")) {
-            return "Please go to *Account Settings → Payment Methods* to update billing info.";
-        } else if (userMessage.includes("thanks") || userMessage.includes("thank you")) {
-            return "You're welcome! 😊 Is there anything else I can help you with?";
-        } else if (userMessage.includes("problem") || userMessage.includes("issue")) {
-            return "I'm sorry to hear you're experiencing an issue. Let me help you resolve it.";
-        } else {
-            return "I'm here to help. Could you please provide more details about your question?";
-        }
-
-     //------------------------------------------------------------------------
-
-    //  try {
-    //     // Using environment variable (set in your build process)
-    //     const API_KEY = process.env.OPENAI_API_KEY;
-    //     const API_URL = "https://api.openai.com/v1/chat/completions";
-        
-    //     const response = await fetch(API_URL, {
-    //         method: 'POST',
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Authorization': `Bearer ${API_KEY}`
-    //         },
-    //         body: JSON.stringify({
-    //             model: "gpt-3.5-turbo",
-    //             messages: [
-    //                 {
-    //                     role: "system", 
-    //                     content: "You are a helpful customer support assistant. Provide concise, helpful responses."
-    //                 },
-    //                 {
-    //                     role: "user", 
-    //                     content: userMessage
-    //                 }
-    //             ],
-    //             temperature: 0.7
-    //         })
-    //     });
-
-    //     const data = await response.json();
-    //     return data.choices[0].message.content;
-        
-    // } catch (error) {
-    //     console.error("Error calling AI API:", error);
-    //     return getFallbackResponse(userMessage);
-    // }
     }
 
     // Get current time
@@ -230,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
         closeButton.addEventListener("click", () => {
             document.body.removeChild(overlay);
             // Redirect to dashboard or other page if needed
-            // window.location.href = "dashboard.html";
+            window.location.href = "/";
         });
         
         // Assemble content
