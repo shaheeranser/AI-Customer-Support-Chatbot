@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candacs - Customer Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7f9;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid #34495e;
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .logo p {
+            color: #bdc3c7;
+            font-size: 14px;
+        }
+
+        .menu {
+            list-style: none;
+            flex-grow: 1;
+        }
+
+        .menu li {
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .menu li:hover {
+            background-color: #34495e;
+        }
+
+        .menu li.active {
+            background-color: #3498db;
+        }
+
+        .menu li i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-link {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .chat-section {
+            flex: 3;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .profile-section {
+            flex: 1;
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            padding: 15px 20px;
+            background-color: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .agent-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .agent-avatar {
+            position: relative;
+            margin-right: 10px;
+        }
+
+        .agent-avatar img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .status {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .status.online {
+            background-color: #2ecc71;
+        }
+
+        .agent-details h3 {
+            font-size: 16px;
+        }
+
+        .agent-details p {
+            font-size: 12px;
+            color: #7f8c8d;
+        }
+
+        .chat-with h3 {
+            font-size: 18px;
+        }
+
+        .chat-with p {
+            font-size: 14px;
+            color: #2ecc71;
+            font-weight: 500;
+        }
+
+        .chat-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-transfer, .btn-end {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+
+        .btn-transfer {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-transfer i {
+            margin-right: 5px;
+        }
+
+        .btn-end {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .btn-end i {
+            margin-right: 5px;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f0f2f5;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+            max-width: 70%;
+        }
+
+        .message.customer {
+            align-items: flex-end;
+            margin-left: auto;
+        }
+
+        .message.agent {
+            align-items: flex-start;
+        }
+
+        .message-content {
+            padding: 12px 15px;
+            border-radius: 18px;
+            margin-bottom: 5px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .customer .message-content {
+            background-color: #3498db;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .agent .message-content {
+            background-color: white;
+            color: #333;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        .message-time {
+            font-size: 11px;
+            color: #95a5a6;
+        }
+
+        /* Chat Input */
+        .chat-input {
+            padding: 15px 20px;
+            background-color: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-container {
+            display: flex;
+            background-color: #f0f2f5;
+            border-radius: 24px;
+            padding: 5px 15px;
+            align-items: center;
+        }
+
+        .input-container input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .input-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .input-actions button {
+            background: transparent;
+            border: none;
+            color: #7f8c8d;
+            cursor: pointer;
+            font-size: 16px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .input-actions button:hover {
+            background-color: #e0e0e0;
+        }
+
+        .send-btn {
+            background-color: #3498db !important;
+            color: white !important;
+        }
+
+        /* Profile Section */
+        .profile-header, .summary-header, .kb-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .profile-header h2, .summary-header h2, .kb-header h2 {
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .profile-details {
+            padding: 20px;
+        }
+
+        .customer-info {
+            margin-bottom: 20px;
+        }
+
+        .customer-info h3 {
+            font-size: 20px;
+            margin-bottom: 5px;
+        }
+
+        .customer-info p {
+            color: #7f8c8d;
+        }
+
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .data-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .label {
+            color: #7f8c8d;
+        }
+
+        .value {
+            font-weight: 500;
+        }
+
+        .value.active {
+            color: #2ecc71;
+        }
+
+        /* AI Summary */
+        .summary-content {
+            padding: 20px;
+        }
+
+        .insight {
+            display: flex;
+            gap: 15px;
+        }
+
+        .insight i {
+            font-size: 24px;
+            color: #3498db;
+            margin-top: 5px;
+        }
+
+        .insight-text h4 {
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+
+        .insight-text p {
+            color: #7f8c8d;
+            line-height: 1.5;
+        }
+
+        /* Knowledge Base */
+        .search-box {
+            position: relative;
+            padding: 15px 20px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 35px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        .view-all-btn {
+            margin: 0 20px 20px;
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        /* Chat Ended Overlay */
+        .chat-ended {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .chat-ended-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .chat-ended-content h2 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .chat-ended-content p {
+            margin-bottom: 20px;
+            color: #7f8c8d;
+        }
+
+        .chat-ended-content button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>Candacs</h1>
+                <p>Customer Support</p>
+            </div>
+            
+            <ul class="menu">
+                <li>
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="active">
+                    <a href="index.html" class="menu-link">
+                        <i class="fas fa-comment"></i>
+                        <span>Live Chats</span>
+                    </a>
+                </li>
+                <li>
+                    <i class="fas fa-ticket-alt"></i>
+                    <span>Tickets</span>
+                </li>
+                <li>
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts</span>
+                </li>
+                <li>
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </li>
+                 <li>
+                     <a href="profile.html" class="menu-link">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-header">
+                    <div class="agent-info">
+                        <div class="agent-avatar">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Agent">
+                            <span class="status online"></span>
+                        </div>
+                        <div class="agent-details">
+                            <h3>Computer Agent</h3>
+                            <p>Online</p>
+                        </div>
+                    </div>
+                    
+                    <div class="chat-with">
+                        <h3>Live Chat with <span id="chat-customer-name">Customer</span></h3>
+                        <p id="customer-status">Online</p>
+                    </div>
+                    
+                    <div class="chat-actions">
+                        <button class="btn-transfer">
+                            <i class="fas fa-exchange-alt"></i>
+                            Transfer
+                        </button>
+                        <button class="btn-end" id="end-chat-btn">
+                            <i class="fas fa-times"></i>
+                            End Chat
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="chat-messages">
+                    <!-- Messages will be populated by JavaScript -->
+                    <div class="message agent">
+                        <div class="message-content">
+                            Hello! Welcome to our support chat. How can I help you today?
+                        </div>
+                        <span class="message-time">10:00 AM</span>
+                    </div>
+                </div>
+                
+                <div class="chat-input">
+                    <div class="input-container">
+                        <input type="text" placeholder="Type a message..." id="message-input">
+                        <div class="input-actions">
+                            <button><i class="far fa-smile"></i></button>
+                            <button><i class="fas fa-paperclip"></i></button>
+                            <button class="send-btn" id="send-message-btn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Customer Profile Section -->
+            <div class="profile-section">
+                <div class="profile-header">
+                    <h2>Customer Profile</h2>
+                </div>
+                
+                <div class="profile-details">
+                    <div class="customer-info">
+                        <h3 id="profile-customer-name">Loading...</h3>
+                        <p id="profile-customer-email">Loading...</p>
+                    </div>
+                    
+                    <div class="customer-data">
+                        <div class="data-row">
+                            <span class="label">Plan:</span>
+                            <span class="value" id="profile-customer-plan">Loading...</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Joined:</span>
+                            <span class="value" id="profile-customer-joined">Loading...</span>
+                        </div>
+                        <div class="data-row">
+                            <span class="label">Status:</span>
+                            <span class="value active" id="profile-customer-status">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="ai-summary">
+                    <div class="summary-header">
+                        <h2>AI Summary</h2>
+                    </div>
+                    
+                    <div class="summary-content">
+                        <div class="insight">
+                            <i class="fas fa-lightbulb"></i>
+                            <div class="insight-text">
+                                <h4>AI Insights</h4>
+                                <p id="ai-summary-text">Customer information loading...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="knowledge-base">
+                    <div class="kb-header">
+                        <h2>Knowledge Base</h2>
+                    </div>
+                    
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search articles...">
+                    </div>
+                    
+                    <button class="view-all-btn">
+                        View All Articles
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='assets/js/app.js') }}"></script>
+</body>
+</html>
